@@ -1,134 +1,66 @@
-import matplotlib.pyplot as plt
+import os
 import numpy as np
 from common.io.writeToa import readToa
 
-#TEST FOR VNIR-O
-toa0= readToa(r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP", r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP\l1b_toa_VNIR-0.nc")
-toa_out0= readToa(r'C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output"', r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output\l1b_toa_VNIR-0.nc")
 
-# Compute relative difference, avoid division by zero using a small epsilon (1e-12)
-diff_rel = np.abs((toa_out0 - toa0) / np.maximum(np.abs(toa0), 1e-12))
+def check_toa_all(ref_dir, out_dir, prefix="l1b_toa_", threshold=1e-4):
+    """
+    Automatically check TOA reference vs output for all available bands.
 
-# Compute statistics on the relative differences
-mean_diff = np.mean(diff_rel)
-std_diff = np.std(diff_rel)
-cutoff = mean_diff + 3 * std_diff   # 3-sigma threshold
+    Parameters
+    ----------
+    ref_dir : str
+        Directory containing reference TOA files.
+    out_dir : str
+        Directory containing output TOA files.
+    prefix : str
+        Common prefix of TOA files (default: "l1b_toa_").
+    threshold : float
+        Relative tolerance (default: 1e-4 = 0.01%).
+    """
 
-# Define tolerance threshold: 0.01% = 1e-4 in relative terms
-threshold = 1e-4
+    # Get sorted lists of reference and output files
+    ref_files = sorted([f for f in os.listdir(ref_dir) if f.startswith(prefix)])
+    out_files = sorted([f for f in os.listdir(out_dir) if f.startswith(prefix)])
 
-# Count valid points below the threshold
-valid_points = np.sum(diff_rel < threshold)
-total_points = diff_rel.size
-ratio_valid = valid_points / total_points
+    print(f"Found {len(ref_files)} reference files and {len(out_files)} output files.\n")
 
-# Print results
-print(f"Mean relative difference: {mean_diff:.2e}")
-print(f"Standard deviation: {std_diff:.2e}")
-print(f"3-sigma cutoff: {cutoff:.2e}")
-print(f"Percentage of valid points (< {threshold:.1e}): {ratio_valid*100:.3f}%")
+    # Iterate over matched pairs
+    for ref_file, out_file in zip(ref_files, out_files):
+        print(f"--- Checking: {ref_file} ---")
 
-# Check if at least 99.7% of points (≈3-sigma rule) are within the threshold
-if ratio_valid >= 0.997:
-    print("✅ Test passed: at least 99.7% of points are within 0.01% difference.")
-else:
-    print("❌ Test failed: more than 0.3% of points exceed the 0.01% tolerance.")
+        # Read data
+        toa_ref = readToa(ref_dir, os.path.join(ref_dir, ref_file))
+        toa_out = readToa(out_dir, os.path.join(out_dir, out_file))
 
-#TEST FOR VNIR-1
-toa1= readToa(r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP", r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP\l1b_toa_VNIR-1.nc")
-toa_out1= readToa(r'C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output"', r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output\l1b_toa_VNIR-1.nc")
+        # Compute relative difference (avoid division by zero)
+        diff_rel = np.abs((toa_out - toa_ref) / np.maximum(np.abs(toa_ref), 1e-12))
 
-# Compute relative difference, avoid division by zero using a small epsilon (1e-12)
-diff_rel = np.abs((toa_out1 - toa1) / np.maximum(np.abs(toa1), 1e-12))
+        # Statistics
+        mean_diff = np.mean(diff_rel)
+        std_diff = np.std(diff_rel)
+        cutoff = mean_diff + 3 * std_diff
 
-# Compute statistics on the relative differences
-mean_diff = np.mean(diff_rel)
-std_diff = np.std(diff_rel)
-cutoff = mean_diff + 3 * std_diff   # 3-sigma threshold
+        # Ratio of valid points
+        valid_points = np.sum(diff_rel < threshold)
+        total_points = diff_rel.size
+        ratio_valid = valid_points / total_points
 
-# Define tolerance threshold: 0.01% = 1e-4 in relative terms
-threshold = 1e-4
+        # Print results
+        print(f"Mean relative difference: {mean_diff:.2e}")
+        print(f"Standard deviation: {std_diff:.2e}")
+        print(f"3-sigma cutoff: {cutoff:.2e}")
+        print(f"Valid points (< {threshold:.1e}): {ratio_valid * 100:.3f}%")
 
-# Count valid points below the threshold
-valid_points = np.sum(diff_rel < threshold)
-total_points = diff_rel.size
-ratio_valid = valid_points / total_points
+        if ratio_valid >= 0.997:  # ~3σ rule
+            print("✅ Test passed: at least 99.7% of points are within 0.01% difference.\n")
+        else:
+            print("❌ Test failed: more than 0.3% of points exceed the 0.01% tolerance.\n")
 
-# Print results
-print(f"Mean relative difference: {mean_diff:.2e}")
-print(f"Standard deviation: {std_diff:.2e}")
-print(f"3-sigma cutoff: {cutoff:.2e}")
-print(f"Percentage of valid points (< {threshold:.1e}): {ratio_valid*100:.3f}%")
 
-# Check if at least 99.7% of points (≈3-sigma rule) are within the threshold
-if ratio_valid >= 0.997:
-    print("✅ Test passed: at least 99.7% of points are within 0.01% difference.")
-else:
-    print("❌ Test failed: more than 0.3% of points exceed the 0.01% tolerance.")
-
-#TEST FOR VNIR-2
-toa2= readToa(r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP", r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP\l1b_toa_VNIR-2.nc")
-toa_out2= readToa(r'C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output"', r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output\l1b_toa_VNIR-2.nc")
-
-# Compute relative difference, avoid division by zero using a small epsilon (1e-12)
-diff_rel = np.abs((toa_out2 - toa2) / np.maximum(np.abs(toa2), 1e-12))
-
-# Compute statistics on the relative differences
-mean_diff = np.mean(diff_rel)
-std_diff = np.std(diff_rel)
-cutoff = mean_diff + 3 * std_diff   # 3-sigma threshold
-
-# Define tolerance threshold: 0.01% = 1e-4 in relative terms
-threshold = 1e-4
-
-# Count valid points below the threshold
-valid_points = np.sum(diff_rel < threshold)
-total_points = diff_rel.size
-ratio_valid = valid_points / total_points
-
-# Print results
-print(f"Mean relative difference: {mean_diff:.2e}")
-print(f"Standard deviation: {std_diff:.2e}")
-print(f"3-sigma cutoff: {cutoff:.2e}")
-print(f"Percentage of valid points (< {threshold:.1e}): {ratio_valid*100:.3f}%")
-
-# Check if at least 99.7% of points (≈3-sigma rule) are within the threshold
-if ratio_valid >= 0.997:
-    print("✅ Test passed: at least 99.7% of points are within 0.01% difference.")
-else:
-    print("❌ Test failed: more than 0.3% of points exceed the 0.01% tolerance.")
-
-#TEST FOR VNIR-3
-toa3= readToa(r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP", r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP\l1b_toa_VNIR-3.nc")
-toa_out3= readToa(r'C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output"', r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output\l1b_toa_VNIR-3.nc")
-
-# Compute relative difference, avoid division by zero using a small epsilon (1e-12)
-diff_rel = np.abs((toa_out3 - toa3) / np.maximum(np.abs(toa3), 1e-12))
-
-# Compute statistics on the relative differences
-mean_diff = np.mean(diff_rel)
-std_diff = np.std(diff_rel)
-cutoff = mean_diff + 3 * std_diff   # 3-sigma threshold
-
-# Define tolerance threshold: 0.01% = 1e-4 in relative terms
-threshold = 1e-4
-
-# Count valid points below the threshold
-valid_points = np.sum(diff_rel < threshold)
-total_points = diff_rel.size
-ratio_valid = valid_points / total_points
-
-# Print results
-print(f"Mean relative difference: {mean_diff:.2e}")
-print(f"Standard deviation: {std_diff:.2e}")
-print(f"3-sigma cutoff: {cutoff:.2e}")
-print(f"Percentage of valid points (< {threshold:.1e}): {ratio_valid*100:.3f}%")
-
-# Check if at least 99.7% of points (≈3-sigma rule) are within the threshold
-if ratio_valid >= 0.997:
-    print("✅ Test passed: at least 99.7% of points are within 0.01% difference.")
-else:
-    print("❌ Test failed: more than 0.3% of points exceed the 0.01% tolerance.")
-
+check_toa_all(
+    ref_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP",
+    out_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output1"
+)
 
 
