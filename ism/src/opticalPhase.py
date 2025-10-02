@@ -1,3 +1,4 @@
+import numpy
 
 from ism.src.initIsm import initIsm
 from math import pi
@@ -92,6 +93,7 @@ class opticalPhase(initIsm):
         :param Tr: Optical transmittance [-]
         :return: TOA image in irradiances [mW/m2]
         """
+        I= toa *Tr* (numpy.pi/4)*(D/f)**2
         # TODO
         return toa
 
@@ -114,7 +116,29 @@ class opticalPhase(initIsm):
         :param band: band
         :return: TOA image 2D in radiances [mW/m2]
         """
-        # TODO
+           #  Read the ISRF and normalise it with its integral
+
+        # wv in [um]
+        isrf, wv_isrf = readIsrf(self.auxdir+'/'+self.ismConfig.isrffile, band)
+        isrf_norm= isrf/np.sum(isrf)
+
+        #convert to nanometers
+        wv_isrf= wv_isrf*1000
+
+        #initiate toa
+        toa = np.zeros((sgm_toa.shape[0], sgm_toa.shape[1]))
+
+        #apply filter
+        for ialt in range(sgm_toa.shape[0]):
+            for iact in range(sgm_toa.shape[1]):
+
+
+                cs= interp1d(sgm_wv, sgm_toa[ialt, iact,:], fill_value=(0,0), bounds_error=False)
+                toa_i= cs(wv_isrf) #we want the image interpolated at the wavelenght of the filter
+
+                L= np.sum(toa_i*isrf_norm)
+                toa[[ialt], [iact]] =L
+
         return toa
 
 
