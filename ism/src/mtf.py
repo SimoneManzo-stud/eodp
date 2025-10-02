@@ -1,4 +1,7 @@
 from math import pi
+
+import numpy
+
 from config.ismConfig import ismConfig
 import numpy as np
 import math
@@ -126,6 +129,7 @@ class mtf:
         :param fr2D: 2D relative frequencies (f/fc), where fc is the optics cut-off frequency
         :return: diffraction MTF
         """
+        Hdiff= (2/np.pi)*(np.arccos(fr2D)-((fr2D)*(1-fr2D**2)**0.5))
         #TODO
         return Hdiff
 
@@ -139,6 +143,8 @@ class mtf:
         :param D: Telescope diameter [m]
         :return: Defocus MTF
         """
+        x= np.pi* defocus* fr2D* (1- fr2D)
+        Hdefoc= (2* j1(x))/x
         #TODO
         return Hdefoc
 
@@ -153,6 +159,7 @@ class mtf:
         :param wHF: RMS of high-frequency wavefront errors [m]
         :return: WFE Aberrations MTF
         """
+        Hwfe= np.exp(-fr2D*(1-fr2D)*(kLF*(wLF/lambd)**2 + (kHF* (wHF/lambd)**2)))
         #TODO
         return Hwfe
 
