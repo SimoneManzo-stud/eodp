@@ -9,12 +9,17 @@ class ismConfig:
         # Configuration parameters
         #--------------------------------------------------------------------------------
         # CCD
-        self.pix_size = 30e-6                    # [m] Pixel size in microns for the MS channels
-        self.t_int = 0.00672                     # [s] Integration time
+       # self.pix_size = 30e-6                    # [m] Pixel size in microns for the MS channels
+        #self.t_int = 0.00672                     # [s] Integration time
+        self.pix_size = 42e-6
+        self.t_int = 0.0428
 
         # Optical system
-        self.D = 0.150                           # [m] Telescope pupil diameter
-        self.f = 0.5262                          # [m] Focal length
+        #self.D = 0.150
+        self.D = 0.07565
+
+        #self.f = 0.5262
+        self.f = 0.2345            # [m] Focal length
         self.Tr = 0.99                           # [-] Optical transmittance
         self.wLF = 100e-9                        # [m] RMS of low-frequency wavefront errors
         self.wHF = 100e-9                        # [m] RMS of high-frequency wavefront errors
@@ -47,6 +52,7 @@ class ismConfig:
         self.ds_B_coeff = 6040                   # [K]
 
         # Electronic stage
+
         self.ADC_gain = 0.56                     # [-]
         self.OCF = 5.4e-6                        # [V/e-] Output conversion factor
         self.bit_depth = 12                      # [-]
@@ -75,6 +81,6 @@ class ismConfig:
         # Optical stage. Use the PSF convolution. If False, will use the MTF
         self.do_psf_conv = False
         # Detection stage errors and effects
-        self.apply_prnu = True
-        self.apply_dark_signal = True
-        self.apply_bad_dead = True
+        self.apply_prnu = False #True
+        self.apply_dark_signal = False #True
+        self.apply_bad_dead = False #True

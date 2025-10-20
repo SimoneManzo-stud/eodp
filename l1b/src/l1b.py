@@ -22,7 +22,7 @@ class l1b(initL1b):
 
             self.logger.info("Start of BAND " + band)
 
-            # Read TOA - output of the ISM in Digital Numbers
+            # Read TOA - output of the ISM in Digital Numbers, read the input image
             # -------------------------------------------------------------------------------
             toa = readToa(self.indir, self.globalConfig.ism_toa + band + '.nc')
 
@@ -35,7 +35,7 @@ class l1b(initL1b):
                 eq_mult = readFactor(os.path.join(self.auxdir,self.l1bConfig.eq_mult+band+NC_EXT),EQ_MULT)
                 eq_add = readFactor(os.path.join(self.auxdir,self.l1bConfig.eq_add+band+NC_EXT),EQ_ADD)
 
-                # Do the equalization and save to file
+                # Do the equalization(used to reduce noise) and save to file
                 toa = self.equalization(toa, eq_add, eq_mult)
                 writeToa(self.outdir, self.globalConfig.l1b_toa_eq + band, toa)
 
@@ -63,7 +63,9 @@ class l1b(initL1b):
         :return: TOA in DN, equalized
         """
         #TODO
+        toa= (toa-eq_add)/eq_mult
         return toa
+
 
     def restoration(self,toa,gain):
         """
@@ -73,6 +75,8 @@ class l1b(initL1b):
         :return: TOA in radiances [mW/sr/m2]
         """
         #TODO
+        toa=toa*gain
+
         self.logger.debug('Sanity check. TOA in radiances after gain application ' + str(toa[1,-1]) + ' [mW/m2/sr]')
 
         return toa
