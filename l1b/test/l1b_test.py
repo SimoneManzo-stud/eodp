@@ -59,7 +59,7 @@ def check_toa_all(ref_dir, out_dir, prefix="l1b_toa_", threshold=1e-4):
 
 
 check_toa_all(
-    ref_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP",
+    ref_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutputs\myoutput_l1b_eq_EODP",
     out_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\EODP-TS-L1B\output1"
 )
 

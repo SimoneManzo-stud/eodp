@@ -5,9 +5,9 @@ from ism.src.ism import ism
 
 # Directory - this is the common directory for the execution of the E2E, all modules
 auxdir = r'C:\\Users\\Simone\\OneDrive\\Documenti\\Desktop\\EODP\\eodp\\auxiliary'
-indir = r"C:\\Users\\Simone\\OneDrive\\Documenti\\Desktop\\Earth Observation\\EODP-TS-E2E-20251002T100205Z-1-001\\EODP-TS-E2E\\sgm_out" # small scene
-outdir = r'C:\\Users\\Simone\\OneDrive\\Documenti\Desktop\\Earth Observation\\my_output_ism1610'
-C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_L1B_1610
+indir = r"C:\\Users\\Simone\\OneDrive\\Documenti\\Desktop\\Earth Observation\\EODP-TS-E2E-20251002T100205Z-1-001\\EODP-TS-E2E\\sgm_out"# small scene
+outdir = r'C:\\Users\\Simone\\OneDrive\\Documenti\Desktop\\my_output_ism1610'
+
 # Initialise the ISM
 myIsm = ism(auxdir, indir, outdir)
 myIsm.processModule()

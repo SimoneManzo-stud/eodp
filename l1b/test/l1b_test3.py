@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from common.io.writeToa import readToa
 
 # input and output directory
-indir_ref = r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutput_EODP"
-indir_out = r"C:\\Users\\Simone\\OneDrive\\Documenti\\Desktop\\myoutput_false_EODP"
+indir_ref = r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutputs\myoutput_l1b_eq_EODP"
+indir_out = r"C:\\Users\\Simone\\OneDrive\\Documenti\\Desktop\\myoutputs\\myoutput_l1b_eqfalse_EODP"
 
 # Bands list
 bands = ["VNIR-0", "VNIR-1", "VNIR-2", "VNIR-3"]
@@ -31,8 +31,8 @@ for band in bands:
     x = np.arange(toa_ref.shape[1])
 
     # Overlapped plot for each band
-    plt.plot(x, row_ref, label=f"{band} - Reference")
-    plt.plot(x, row_out, "--", label=f"{band} - Output")
+    plt.plot(x, row_ref, label=f"{band} - EQUALIZED")
+    plt.plot(x, row_out, "--", label=f"{band} - NOT-EQUALIZED")
 
 plt.xlabel("Column index")
 plt.ylabel("TOA Value")

@@ -154,7 +154,7 @@ class detectionPhase(initIsm):
         return toa
 
 
-def darkSignal(self, toa, kdsnu, T, Tref, ds_A_coeff, ds_B_coeff):
+    def darkSignal(self, toa, kdsnu, T, Tref, ds_A_coeff, ds_B_coeff):
         """
         Dark signal simulation
         :param toa: TOA in [e-]
@@ -167,7 +167,7 @@ def darkSignal(self, toa, kdsnu, T, Tref, ds_A_coeff, ds_B_coeff):
         """
         #TODO
         dsnu = kdsnu * np.abs(np.random.normal(0, 1, toa.shape[1]))
-        Sd = ds_A_coeff * (T / Tref) * 3 * np.exp(-ds_B_coeff((1 / T) - (1 / Tref)))
+        Sd = ds_A_coeff * (T / Tref) * 3 * np.exp(-ds_B_coeff*((1 / T) - (1 / Tref)))
         ds = Sd * (1 + dsnu)
         toa = toa + ds
         return toa
