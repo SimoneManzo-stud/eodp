@@ -122,6 +122,7 @@ class detectionPhase(initIsm):
         """
         #TODO
         toae = toa * QE
+        toae = np.minimum(toae, self.ismConfig.FWC)
         return toae
 
 
