@@ -59,7 +59,7 @@ def check_toa_all(ref_dir, out_dir, prefix="ism_toa_isrf_", threshold=1e-4):
 
 
 check_toa_all(
-    ref_dir=r'C:\Users\Simone\OneDrive\Documenti\Desktop\myoutputs\my_output_ism0910',
+    ref_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\myoutputs\myoutput_ism_0910",
     out_dir=r"C:\Users\Simone\OneDrive\Documenti\Desktop\Earth Observation\EODP-TS-ISM\output"
 )
 
